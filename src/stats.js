@@ -1,11 +1,16 @@
-'use strict';
 
 import Statistics from 'statistics.js';
 
 const MC_SIMS = 1e4;
 const stats = new Statistics();
 // stats is old and needs this reference :(
-const _tcdf = (...args) => stats.studentsTCumulativeValue(...args);
+// there is a bug where it starts outputting .5 after a high enough value
+const _tcdf = (num, df) => {
+  if (num >= 8 && df >= 10 || num >= 10 && 3 <= df && df <= 10)
+    return 1;
+  return stats.studentsTCumulativeValue(num, df);
+}
+window.rtcdf = _tcdf;
 const tcdf = (left, right, df) => _tcdf(right, 19) - _tcdf(left, 19);
 
 function monteCarloSample(seq) {
@@ -76,14 +81,23 @@ export function monteCarlo(seq, ha) {
 }
 
 export function students(seq, ha) {
-  const { condition } = ha;
+  const { condition, h0 } = ha;
   const mu = mean(seq);
+  const df = seq.length - 1;
 
   // TODO get a better way to set u0
   return {
     p() {
-      const tv = tval(seq, 10);
-      return tcdf(-99, tv, seq.length - 1);
+      const tv = tval(seq, h0);
+      const tcdf_df = (l, r) => tcdf(l, r, df);
+      console.log(tcdf_df(-99, tv), tcdf_df(tv, 99));
+      if (ha.operation == Operator.less)
+        return tcdf_df(-99, tv);
+      if (ha.operation == Operator.greater)
+        return tcdf_df(tv, 99);
+      if (ha.operation == Operator.notequal)
+        return tcdf_df(-99, Math.min(tv, -tv)) * 2;
+      return 0;
     },
     ci(level) {
       const lr = invT(level, seq.length - 1) * se(seq);

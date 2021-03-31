@@ -15,7 +15,7 @@
   let seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
   const confidence = 0.95;
   $: newItem = '';
-  const ha = new HA(Operator.greater, 10);
+  const ha = new HA(Operator.less, 10);
 </script>
 
 <main>
