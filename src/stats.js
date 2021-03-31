@@ -2,7 +2,7 @@ const MC_SIMS = 1e4;
 
 function monteCarloSample(seq) {
   const sample = [];
-  seq.forEach(sample.push(rngChoice(seq)));
+  seq.forEach(() => sample.push(rngChoice(seq)));
   return sample;
 }
 
@@ -19,7 +19,7 @@ function monteCarloMeans(seq) {
 }
 
 export function monteCarlo(seq) {
-  const means = monteCarloMeans().sort();
+  const means = monteCarloMeans(seq).sort();
   const { length: l } = means;
   return {
     // Use binary search later if this is too slow
@@ -27,7 +27,7 @@ export function monteCarlo(seq) {
       return means.reduce((sum, num) => sum + condition(num), 0) / l;
     },
     ci(level) {
-      const lr = (1 - level) / 2;
+      const lr = Math.floor(l * (1 - level) / 2);
       return { left: means[lr], right: means[l - lr] };
     }
   };
