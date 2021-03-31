@@ -1,4 +1,11 @@
+'use strict';
+
+import Statistics from 'statistics.js';
+
 const MC_SIMS = 1e4;
+const stats = new Statistics();
+const _tcdf = (...args) => stats.studentsTCumulativeValue(...args);
+const tcdf = (left, right, df) => _tcdf(right, 19) - _tcdf(left, 19);
 
 function monteCarloSample(seq) {
   const sample = [];

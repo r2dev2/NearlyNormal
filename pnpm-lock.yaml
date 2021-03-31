@@ -1,5 +1,6 @@
 dependencies:
   sirv-cli: 1.0.11
+  statistics.js: 1.0.0
 devDependencies:
   '@rollup/plugin-commonjs': 14.0.0_rollup@2.44.0
   '@rollup/plugin-node-resolve': 8.4.0_rollup@2.44.0
@@ -1218,6 +1219,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==
+  /statistics.js/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-02+/LzVgoXUQ1PKqq3Z6TQeAX72ykAispsSp7JhimWgv5q7SLhi24rzXthDpteLloihmmLiui22Ygu4VEWOK5g==
   /statuses/1.5.0:
     dev: true
     engines:
@@ -1367,4 +1372,5 @@ specifiers:
   rollup-plugin-svelte-hot: ^0.13.0
   rollup-plugin-terser: ^7.0.0
   sirv-cli: ^1.0.0
+  statistics.js: ^1.0.0
   svelte: ^3.0.0
