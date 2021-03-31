@@ -32,11 +32,13 @@
     {/each}
   </div>
   <div class="info">
+    <h2>Monte Carlo</h2>
     <ModelResults
       sim={monteCarlo} {seq} {confidence}
       condition={v => v >= 10} />
   </div>
   <div class="info">
+    <h2>Student's t model</h2>
     <ModelResults
       sim={students} {seq} {confidence}
       condition={v => v >= 10} />

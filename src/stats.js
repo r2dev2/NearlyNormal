@@ -81,6 +81,7 @@ function stdDev(seq) {
   return variance ** 0.5;
 }
 
+// POV: you don't want to figure out how invT actually works
 function invT(conf, df, precision=0.001) {
   let left = 0, right = 10, mid = 0;
   while (left < right) {
