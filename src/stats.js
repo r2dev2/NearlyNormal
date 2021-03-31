@@ -42,10 +42,7 @@ export class HA {
   constructor(operation, h0) {
     this.operation = operation;
     this.h0 = h0;
-  }
-
-  condition(v) {
-    return this.operation(v, this.h0);
+    this.condition = v => this.operation(v, this.h0);
   }
 
   toString() {
@@ -62,12 +59,13 @@ export class HA {
   }
 }
 
-export function monteCarlo(seq) {
+export function monteCarlo(seq, ha) {
+  const { condition } = ha;
   const means = monteCarloMeans(seq).sort();
   const { length: l } = means;
   return {
     // Use binary search later if this is too slow
-    p(condition) {
+    p() {
       return means.filter(condition).length / l;
     },
     ci(level) {
@@ -77,12 +75,13 @@ export function monteCarlo(seq) {
   };
 }
 
-export function students(seq) {
+export function students(seq, ha) {
+  const { condition } = ha;
   const mu = mean(seq);
 
   // TODO get a better way to set u0
   return {
-    p(condition) {
+    p() {
       const tv = tval(seq, 10);
       return tcdf(-99, tv, seq.length - 1);
     },

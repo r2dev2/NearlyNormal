@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { monteCarlo, students } from './stats'; 
+  import { monteCarlo, students, HA, Operator } from './stats'; 
   import ModelResults from './ModelResults.svelte';
 
   // seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
@@ -14,14 +14,8 @@
 
   let seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
   const confidence = 0.95;
-  $: mc = monteCarlo(seq);
-  $: mci = () => mc.ci(confidence);
-  const round = (num, prec) => {
-    const m = Math.pow(10, prec);
-    return Math.ceil(num * m) / m;
-  };
-  const roundConf = n => round(n, 3);
   $: newItem = '';
+  const ha = new HA(Operator.greater, 10);
 </script>
 
 <main>
@@ -34,13 +28,13 @@
   <div class="info">
     <h2>Monte Carlo</h2>
     <ModelResults
-      sim={monteCarlo} {seq} {confidence}
+      sim={monteCarlo} {seq} {confidence} {ha}
       condition={v => v >= 10} />
   </div>
   <div class="info">
     <h2>Student's t model</h2>
     <ModelResults
-      sim={students} {seq} {confidence}
+      sim={students} {seq} {confidence} {ha}
       condition={v => v >= 10} />
   </div>
 </main>

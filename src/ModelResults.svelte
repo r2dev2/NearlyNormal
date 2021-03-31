@@ -3,11 +3,12 @@
   export let seq = [];
   export let confidence = 0.95;
   export let condition = () => false;
+  export let ha;
 
   const round = num => Math.ceil(num * 1000) / 1000;
 
-  $: simRes  = sim(seq);
-  $: p = simRes.p(condition);
+  $: simRes = sim(seq, ha);
+  $: p = simRes.p(ha.condition);
   $: ci = simRes.ci(confidence);
   $: left = round(ci.left);
   $: right = round(ci.right);
