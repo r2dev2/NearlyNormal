@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { monteCarlo } from './stats'; 
+  import ModelResults from './ModelResults.svelte';
 
   // seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
 
@@ -31,12 +32,9 @@
     {/each}
   </div>
   <div class="info">
-    <p>P: <span class="num">{mc.p(v => v >= 10)}</span></p>
-    <p><span class="num">{confidence * 100}%</span>
-      confidence interval:
-      <span class="num">{roundConf(mci().left)}</span> to
-      <span class="num">{roundConf(mci().right)}</span>
-    </p>
+    <ModelResults
+      sim={monteCarlo} {seq} {confidence}
+      condition={v => v >= 10} />
   </div>
 </main>
 
@@ -65,7 +63,7 @@
     text-align: center;
   }
 
-  .num {
+  :global(.num) {
     color: crimson;
     background-color: #F1F1F1;
     font-size: 105%;
