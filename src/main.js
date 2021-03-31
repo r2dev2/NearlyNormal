@@ -1,11 +1,9 @@
-import App from './App.svelte'
+import App from './App.svelte';
 
 const app = new App({
   target: document.body,
-  props: {
-    name: 'world',
-  },
-})
+  props: { },
+});
 
 export default app
 
@@ -13,6 +11,6 @@ export default app
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     app.$destroy()
-  })
-  import.meta.hot.accept()
+  });
+  import.meta.hot.accept();
 }
