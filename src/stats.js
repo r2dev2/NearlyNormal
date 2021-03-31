@@ -43,6 +43,8 @@ export function monteCarlo(seq) {
 }
 
 export function students(seq) {
+  const mu = mean(seq);
+
   // TODO get a better way to set u0
   return {
     p(condition) {
@@ -50,7 +52,8 @@ export function students(seq) {
       return tcdf(-99, tv, seq.length - 1);
     },
     ci(level) {
-      return { left: NaN, right: NaN };
+      const lr = invT(level, seq.length - 1) * se(seq);
+      return { left: mu - lr, right: mu + lr };
     }
   };
 }
