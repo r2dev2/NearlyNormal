@@ -7,6 +7,7 @@ function monteCarloSample(seq) {
 }
 
 function mean(seq) {
+  if (seq.length === 0) return NaN;
   return seq.reduce((sum, num) => sum + num) / seq.length;
 }
 

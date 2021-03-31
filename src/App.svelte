@@ -2,31 +2,56 @@
   import { onMount } from 'svelte';
   import { monteCarlo } from './stats'; 
 
-  const seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
+  // seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
+
+  function handleKeyUp({key}) {
+    if (key === 'Enter') {
+      seq = [...seq, parseFloat(newItem)];
+      newItem = '';
+    }
+  }
+
+  let seq = [];
   const confidence = 0.95;
   $: mc = monteCarlo(seq);
-  const mci = () => mc.ci(confidence);
+  $: mci = () => mc.ci(confidence);
   const round = (num, prec) => {
     const m = Math.pow(10, prec);
     return Math.ceil(num * m) / m;
   };
   const roundConf = n => round(n, 3);
+  $: newItem = '';
 </script>
 
 <main>
-  <p>P: <span class="num">{mc.p(v => v >= 10)}</span></p>
-  <p><span class="num">{confidence * 100}%</span>
-    confidence interval:
-    <span class="num">{roundConf(mci().left)}</span> to
-    <span class="num">{roundConf(mci().right)}</span></p>
+  <div class="input">
+    {#each seq as s}
+      <p class="num">{s}</p>
+    {/each}
+    <input type="text" bind:value={newItem} on:keyup={handleKeyUp} />
+  </div>
+  <div class="info">
+    <p>P: <span class="num">{mc.p(v => v >= 10)}</span></p>
+    <p><span class="num">{confidence * 100}%</span>
+      confidence interval:
+      <span class="num">{roundConf(mci().left)}</span> to
+      <span class="num">{roundConf(mci().right)}</span>
+    </p>
+  </div>
 </main>
 
 <style>
   main {
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
     padding: 1em;
     max-width: 240px;
     margin: 0 auto;
+  }
+
+  .info {
+    padding-left: 50px;
   }
 
   h1 {
@@ -34,6 +59,10 @@
     text-transform: uppercase;
     font-size: 4em;
     font-weight: 100;
+  }
+
+  .info {
+    text-align: center;
   }
 
   .num {
