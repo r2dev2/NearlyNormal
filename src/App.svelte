@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { monteCarlo } from './stats'; 
+  import { monteCarlo, students } from './stats'; 
   import ModelResults from './ModelResults.svelte';
 
   // seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
@@ -34,6 +34,11 @@
   <div class="info">
     <ModelResults
       sim={monteCarlo} {seq} {confidence}
+      condition={v => v >= 10} />
+  </div>
+  <div class="info">
+    <ModelResults
+      sim={students} {seq} {confidence}
       condition={v => v >= 10} />
   </div>
 </main>

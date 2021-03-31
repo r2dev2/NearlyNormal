@@ -32,7 +32,7 @@ export function monteCarlo(seq) {
   return {
     // Use binary search later if this is too slow
     p(condition) {
-      return means.reduce((sum, num) => sum + condition(num), 0) / l;
+      return means.filter(condition).length / l;
     },
     ci(level) {
       const lr = Math.floor(l * (1 - level) / 2);
@@ -41,6 +41,38 @@ export function monteCarlo(seq) {
   };
 }
 
+export function students(seq) {
+  // TODO get a better way to set u0
+  return {
+    p(condition) {
+      const tv = tval(seq, 10);
+      return tcdf(-99, tv, seq.length - 1);
+    },
+    ci(level) {
+      return { left: NaN, right: NaN };
+    }
+  };
+}
+
 function rngChoice(seq) {
   return seq[Math.floor(Math.random() * seq.length)];
+}
+
+function tval(seq, u0) {
+  return (mean(seq) - u0) / se(seq);
+}
+
+function se(seq) {
+  if (seq.length === 0) return Infinity;
+  return stdDev(seq) / seq.length ** 0.5;
+}
+
+function stdDev(seq) {
+  if (seq.length === 0) return Infinity;
+  const mu = mean(seq);
+  const variance = seq
+    .map(num => (num - mu) ** 2)
+    .reduce((sum, val) => sum + val, 0) /
+    Math.max(1, seq.length - 1);
+  return variance ** 0.5;
 }
