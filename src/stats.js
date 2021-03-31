@@ -27,6 +27,41 @@ function monteCarloMeans(seq) {
   return means;
 }
 
+export const Operator = {
+  less: (l, r) => l < r,
+  greater: (l, r) => l > r,
+  notequal: (l, r) => l != r
+};
+
+export class HA {
+  /**
+   * h0 is the null hypothesis population value
+   * operation is either Operator.less, operator.greater, or operator.notequal
+   * ha: mu operation h0
+   */
+  constructor(operation, h0) {
+    this.operation = operation;
+    this.h0 = h0;
+  }
+
+  condition(v) {
+    return this.operation(v, this.h0);
+  }
+
+  toString() {
+    if (this.operation == Operator.less) {
+      return `u < ${this.h0}`;
+    }
+    if (this.operation == Operator.greater) {
+      return `u > ${this.h0}`;
+    }
+    if (this.operation == Operator.notequal) {
+      return `u ≠ ${this.h0}`;
+    }
+    return '';
+  }
+}
+
 export function monteCarlo(seq) {
   const means = monteCarloMeans(seq).sort();
   const { length: l } = means;
@@ -82,9 +117,10 @@ function stdDev(seq) {
 }
 
 // POV: you don't want to figure out how invT actually works
-function invT(conf, df, precision=0.001) {
+function invT(conf, df, precision=0.001, pizdecc=1e4) {
   let left = 0, right = 10, mid = 0;
-  while (left < right) {
+  let count = 0;
+  while (left < right && count++ < pizdecc) {
     mid = (left + right) / 2;
     if (tcdf(-mid, mid, df) > conf) {
       right = mid;
