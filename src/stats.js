@@ -10,7 +10,6 @@ const _tcdf = (num, df) => {
     return 1;
   return stats.studentsTCumulativeValue(num, df);
 }
-window.rtcdf = _tcdf;
 const tcdf = (left, right, df) => _tcdf(right, 19) - _tcdf(left, 19);
 
 function monteCarloSample(seq) {
@@ -65,12 +64,18 @@ export class HA {
 }
 
 export function monteCarlo(seq, ha) {
-  const { condition } = ha;
+  const { condition, operation, h0 } = ha;
   const means = monteCarloMeans(seq).sort();
+  const mu = mean(seq);
   const { length: l } = means;
   return {
     // Use binary search later if this is too slow
     p() {
+      if (operation == Operator.notequal) {
+        const less = means.filter(e => e < h0).length;
+        const more = means.filter(e => e > h0).length;
+        return 2 * Math.min(less, more) / l;
+      }
       return means.filter(condition).length / l;
     },
     ci(level) {
@@ -90,11 +95,10 @@ export function students(seq, ha) {
     p() {
       const tv = tval(seq, h0);
       const tcdf_df = (l, r) => tcdf(l, r, df);
-      console.log(tcdf_df(-99, tv), tcdf_df(tv, 99));
       if (ha.operation == Operator.less)
-        return tcdf_df(-99, tv);
-      if (ha.operation == Operator.greater)
         return tcdf_df(tv, 99);
+      if (ha.operation == Operator.greater)
+        return tcdf_df(-99, tv);
       if (ha.operation == Operator.notequal)
         return tcdf_df(-99, Math.min(tv, -tv)) * 2;
       return 0;
