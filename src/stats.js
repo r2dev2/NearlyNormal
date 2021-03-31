@@ -4,6 +4,7 @@ import Statistics from 'statistics.js';
 
 const MC_SIMS = 1e4;
 const stats = new Statistics();
+// stats is old and needs this reference :(
 const _tcdf = (...args) => stats.studentsTCumulativeValue(...args);
 const tcdf = (left, right, df) => _tcdf(right, 19) - _tcdf(left, 19);
 
@@ -75,4 +76,18 @@ function stdDev(seq) {
     .reduce((sum, val) => sum + val, 0) /
     Math.max(1, seq.length - 1);
   return variance ** 0.5;
+}
+
+function invT(conf, df, precision=0.001) {
+  let left = 0, right = 10, mid = 0;
+  while (left < right) {
+    mid = (left + right) / 2;
+    if (tcdf(-mid, mid, df) > conf) {
+      right = mid;
+    }
+    else {
+      left = mid + precision;
+    }
+  }
+  return left;
 }
