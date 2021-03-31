@@ -11,7 +11,7 @@
     }
   }
 
-  let seq = [];
+  let seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
   const confidence = 0.95;
   $: mc = monteCarlo(seq);
   $: mci = () => mc.ci(confidence);
@@ -25,10 +25,10 @@
 
 <main>
   <div class="input">
-    {#each seq as s}
+    <input type="text" bind:value={newItem} on:keyup={handleKeyUp} />
+    {#each seq.reverse() as s}
       <p class="num">{s}</p>
     {/each}
-    <input type="text" bind:value={newItem} on:keyup={handleKeyUp} />
   </div>
   <div class="info">
     <p>P: <span class="num">{mc.p(v => v >= 10)}</span></p>
