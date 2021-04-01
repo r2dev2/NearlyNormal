@@ -10,10 +10,7 @@
 
   $: bins = bins.length ? bins : normDist(25, 5, 3);
   $: groups = bins.filter(e => e.start != null);
-  $: seq.set($seq.length == 0
-    ? extractSample(groups, n)
-    : $seq
-  );
+  $: seq.set(extractSample(groups, n));
   $: maxX = bins[bins.length - 1].end;
   $: maxVal = Math.max(...groups.map(e => e.amt));
 
