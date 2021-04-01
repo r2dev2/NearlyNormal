@@ -35,7 +35,7 @@
         const dy = ogPos - e.clientY;
         const dm = (pHeight + dy) / pHeight;
         bin.amt *= dm;
-        bin.amt = Math.min(Math.max(bin.amt, 0), 100);
+        bin.amt = Math.min(Math.max(bin.amt, 0), 50);
         bins = bins;
       }
     }
@@ -64,7 +64,6 @@
         <div
           class="bar-handle"
           on:mousedown={(b => onMouseMove = handleBarMouseMove(b))(bin)} />
-          <!--on:mousemove={handleBarMouseMove(bin)} />-->
       </div>
     {/each}
   </div>
@@ -75,6 +74,7 @@
     display: flex;
     flex-direction: row;
     transform: scaleY(-1);
+    height: 20em;
   }
 
   .bar-label {
