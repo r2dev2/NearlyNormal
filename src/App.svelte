@@ -31,7 +31,7 @@
     {/each}
   </div>-->
   <div class="input">
-    <Distribution {seq} n={10} />
+    <Distribution {seq} />
   </div>
   <div class="info">
     <h2>Monte Carlo</h2>
