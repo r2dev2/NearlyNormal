@@ -16,6 +16,7 @@
 
 <main>
   <div class="input">
+    <h2>Sample Distribution</h2>
     <Distribution {seq} {n} />
     <input class="slider" type="range" min={2} max={60} bind:value={n} />
     <p>n={n}</p>
@@ -80,7 +81,7 @@
   }
 
   .conf-slider {
-    padding-top: 0.5%;
+    padding-top: 7%;
     width: 50%;
     margin: auto;
   }
