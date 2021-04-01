@@ -17,7 +17,6 @@
   $: maxX = bins[bins.length - 1].end;
   $: maxVal = Math.max(...groups.map(e => e.amt));
 
-  let lastMousePos = null;
   let onMouseMove = () => { };
   let target = null;
 
@@ -43,7 +42,7 @@
   }
 
   function onWinMouseUp() {
-    console.log('window onmouseup');
+    target = null;
     onMouseMove = () => { };
   }
   onMount(() => window.addEventListener('mouseup', onWinMouseUp));
@@ -52,7 +51,7 @@
 </script>
 
 <svelte:window
-  on:mousedown={e => { console.log('dist mousedown'); lastMousePos = e.clientY; target = e.target }}
+  on:mousedown={e => { target = e.target }}
   on:mousemove={e => onMouseMove(e)} />
 
 
