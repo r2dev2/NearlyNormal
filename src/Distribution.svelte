@@ -8,7 +8,7 @@
 
   let bins = [];
 
-  $: bins = bins.length ? bins : normDist(25, 5, 3);
+  $: bins = bins.length ? bins : normDist(25, 5, 2);
   $: groups = bins.filter(e => e.start != null);
   $: seq.set(extractSample(groups, n));
   $: maxX = bins[bins.length - 1].end;

@@ -18,7 +18,7 @@
   const confidence = 0.95;
   $: newItem = '';
   let h0 = 26;
-  let sop = '<';
+  let sop = '>';
   $: op = OpString[sop];
   let n = 5;
   $: ha = new HA(op, parseFloat(h0));
