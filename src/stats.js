@@ -113,8 +113,9 @@ export function students(seq, ha) {
 
 export function normDist(mu, s, binWidth) {
   const dist = stats.normalDistribution(mu, s);
-  const keys = Object.keys(dist).sort((a, b) => parseFloat(a) - parseFloat(b));
-  const groups = [{ start: parseFloat(keys[0]), amt: 0 }];
+  const pf = parseFloat;
+  const keys = Object.keys(dist).sort((a, b) => pf(a) - pf(b));
+  const groups = [{ start: Math.floor(pf(keys[0])), amt: 0 }];
 	const gl = () => groups.length;
   for (const k of keys) {
     const ik = parseFloat(k);
@@ -125,7 +126,28 @@ export function normDist(mu, s, binWidth) {
       groups.push({ start: ik, amt: 1 });
     }
   }
-  return groups.map(o => ({...o, amt: Math.floor(o.amt)}));
+  return [
+    ...groups.map(o => ({...o, amt: Math.floor(o.amt)})),
+    { end: groups[gl() - 1].start + binWidth }
+  ];
+}
+
+export function extractSample(dist, n) {
+  const scale = n / dist.reduce((x, y) => x + y.amt, 0);
+  const bw = dist[1].start - dist[0].start;
+  const sample = [];
+  dist.forEach(d => {
+    const needed = Math.ceil(d.amt * scale);
+    if (needed) {
+      const beg = d.start;
+      const end = beg + bw;
+      for (let i = 0; i < needed; ++i) {
+        sample.push(Math.random() * (end - beg) + beg);
+      }
+    }
+  });
+  const beg = Math.floor((sample.length - n) / 2);
+  return sample.slice(beg, beg + n);
 }
 
 function rngChoice(seq) {
