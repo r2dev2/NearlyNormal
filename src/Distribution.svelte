@@ -1,4 +1,5 @@
 <script>
+  import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { extractSample, normDist } from './stats';
 
@@ -16,22 +17,37 @@
   $: maxX = bins[bins.length - 1].end;
   $: maxVal = Math.max(...groups.map(e => e.amt));
 
+  let lastMousePos = null;
+  let onMouseMove = () => { };
+  let target = null;
+
   function handleBarMouseMove(bin) {
     return e => {
       if (e.buttons == 1) {
         const pHeight = parseFloat(getComputedStyle(
           e.target.parentElement.querySelector('.bar')
         ).height);
-        const dy = e.clientY - e.target.getBoundingClientRect().y;
+        const dy = lastMousePos - e.clientY;
         const da = dy / pHeight;
         bin.amt += da;
         bins = bins;
       }
+      lastMousePos = e.clientY;
     }
   }
+
+  function onWinMouseUp() {
+    onMouseMove = () => { };
+  }
+  onMount(() => window.addEventListener('mouseup', onWinMouseUp));
+  onDestroy(() => window.removeEventListener('mouseup', onWinMouseUp));
+    
 </script>
 
-<div class="dist">
+<div
+  class="dist"
+  on:mousedown={e => lastMousePos = e.clientY, target = e.target}
+  on:mousemove={e => onMouseMove(e)}>
   <div class="bins">
     {#each groups as bin}
       <div class="bar-container">
@@ -39,7 +55,8 @@
         <div class="bar" style="height: {bin.amt / 3}em" />
         <div
           class="bar-handle"
-          on:mousemove={handleBarMouseMove(bin)} />
+          on:mousedown={(b => onMouseMove = handleBarMouseMove(b))(bin)} />
+          <!--on:mousemove={handleBarMouseMove(bin)} />-->
       </div>
     {/each}
   </div>
