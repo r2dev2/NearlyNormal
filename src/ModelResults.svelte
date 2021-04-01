@@ -5,7 +5,8 @@
   export let condition = () => false;
   export let ha;
 
-  const round = num => Math.ceil(num * 1000) / 1000;
+  const round = num => `${Math.ceil(num * 1000) / 1000}`
+    .padEnd(6, 0);
 
   $: simRes = sim(seq, ha);
   $: p = simRes.p(ha.condition);

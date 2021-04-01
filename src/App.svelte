@@ -60,6 +60,7 @@
 
   .info {
     padding-left: 50px;
+    width: 30em;
   }
 
   h1 {

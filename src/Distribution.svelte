@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import { extractSample, normDist } from './stats';
 
@@ -23,6 +23,7 @@
 
   function handleBarMouseMove(bin) {
     return e => {
+      try {
       if (e.buttons == 1) {
         const pHeight = parseFloat(getComputedStyle(
           e.target.parentElement.querySelector('.bar')
@@ -33,6 +34,7 @@
         bins = bins;
       }
       lastMousePos = e.clientY;
+      } catch (e_) { console.error('bad', e_) }
     }
   }
 
