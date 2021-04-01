@@ -16,7 +16,7 @@
 </script>
 
 <div>
-  <p>P: <span class="num">{`${p}`.padEnd(8, 0)}</span></p>
+  <p>P: <span class="num">{p.toFixed(8)}</span></p>
   <p>
     <span class="num">{confidence * 100}%</span>
     confidence interval:

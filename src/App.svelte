@@ -20,7 +20,10 @@
   // let seq = [9.9, 9.7, 10, 10.1, 9.9, 9.6, 9.8, 9.8, 10, 9.5, 9.7, 10.1, 9.9, 9.6, 10.2, 9.8, 10, 9.9, 9.5, 9.9];
   const confidence = 0.95;
   $: newItem = '';
-  const ha = new HA(Operator.greater, 26);
+  let h0 = 26;
+  let op = Operator.greater;
+  let n = 5;
+  $: ha = new HA(op, h0);
 </script>
 
 <main>
@@ -32,19 +35,19 @@
     {/each}
   </div>-->
   <div class="input">
-    <Distribution {seq} />
+    <Distribution {seq} {n} />
+    <input class="slider" type="range" min={2} max={60} bind:value={n} />
+    <p>n={n}</p>
   </div>
   <div class="info">
     <h2>Monte Carlo</h2>
     <ModelResults
-      sim={monteCarlo} seq={$seq} {confidence} {ha}
-      condition={v => v >= 10} />
+      sim={monteCarlo} seq={$seq} {confidence} {ha} />
   </div>
   <div class="info">
     <h2>Student's t model</h2>
     <ModelResults
-      sim={students} seq={$seq} {confidence} {ha}
-      condition={v => v >= 10} />
+      sim={students} seq={$seq} {confidence} {ha} />
   </div>
 </main>
 
@@ -56,6 +59,10 @@
     padding: 1em;
     max-width: 240px;
     margin: 0 auto;
+  }
+
+  .input {
+    text-align: center;
   }
 
   .info {
@@ -84,5 +91,35 @@
     main {
       max-width: none;
     }
+  }
+
+  .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;  
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: #4CAF50;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
   }
 </style>
