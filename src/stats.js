@@ -1,5 +1,5 @@
-
 import Statistics from 'statistics.js';
+
 
 const MC_SIMS = 1e4;
 const stats = new Statistics();
@@ -11,6 +11,8 @@ const _tcdf = (num, df) => {
   return stats.studentsTCumulativeValue(num, df);
 }
 const tcdf = (left, right, df) => _tcdf(right, 19) - _tcdf(left, 19);
+
+window.stats = stats;
 
 function monteCarloSample(seq) {
   const sample = [];
@@ -109,18 +111,21 @@ export function students(seq, ha) {
   };
 }
 
-export function normal(x) {
-  return Math.exp(-x * x / 2) / (Math.sqrt(2 * Math.PI));
-}
-
-export function normDist(center, bars, binWidth) {
-  try {
-  const r = [...Array(bars).keys()]
-    .map(i => 
-    Math.round(normal(((i + 0.5) * binWidth - center) / 8) * 300));
-  return r;
+export function normDist(mu, s, binWidth) {
+  const dist = stats.normalDistribution(mu, s);
+  const keys = Object.keys(dist).sort((a, b) => parseFloat(a) - parseFloat(b));
+  const groups = [{ start: parseFloat(keys[0]), amt: 0 }];
+	const gl = () => groups.length;
+  for (const k of keys) {
+    const ik = parseFloat(k);
+    if (ik - groups[gl() - 1].start < binWidth) {
+      groups[gl() - 1].amt += dist[k];
+    }
+    else {
+      groups.push({ start: ik, amt: 1 });
+    }
   }
-  catch (e) { console.error('BAD', e); return [] };
+  return groups.map(o => ({...o, amt: Math.floor(o.amt)}));
 }
 
 function rngChoice(seq) {
