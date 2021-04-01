@@ -39,6 +39,18 @@ export const Operator = {
   notequal: (l, r) => l != r
 };
 
+export const OpString = {};
+OpString[Operator.less] = '<';
+OpString[Operator.greater] = '>';
+OpString[Operator.notequal] = '≠';
+OpString['<'] = Operator.less;
+OpString['>'] = Operator.greater;
+OpString['≠'] = Operator.notequal;
+
+export function opString(op) {
+  return OpString[op] || '';
+};
+
 export class HA {
   /**
    * h0 is the null hypothesis population value
@@ -78,6 +90,9 @@ export function monteCarlo(seq, ha) {
         const more = means.filter(e => e > h0).length;
         return 2 * Math.min(less, more) / l;
       }
+      // function keeps ketting stringified for some reason
+      if (typeof ha.operation == 'string')
+        ha.operation = eval(ha.operation);
       return means.filter(condition).length / l;
     },
     ci(level) {
