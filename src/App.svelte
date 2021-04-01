@@ -5,33 +5,16 @@
   import ModelResults from './ModelResults.svelte';
   import Distribution from './Distribution.svelte';
 
-
-  function handleKeyUp({key}) {
-    if (key === 'Enter') {
-      seq = [...seq, parseFloat(newItem)];
-      newItem = '';
-    }
-  }
-
   const seq = writable([]);
-  seq.set([]);
   const confidence = 0.95;
-  $: newItem = '';
   let h0 = 26;
   let sop = '>';
-  $: op = OpString[sop];
   let n = 5;
+  $: op = OpString[sop];
   $: ha = new HA(op, parseFloat(h0));
 </script>
 
 <main>
-  <!--
-  <div class="input">
-    <input type="text" bind:value={newItem} on:keyup={handleKeyUp} />
-    {#each seq.reverse() as s}
-      <p class="num">{s}</p>
-    {/each}
-  </div>-->
   <div class="input">
     <Distribution {seq} {n} />
     <input class="slider" type="range" min={2} max={60} bind:value={n} />
@@ -97,13 +80,6 @@
   .info > div {
     padding-left: 50px;
     width: 30em;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
   }
 
   :global(.num) {

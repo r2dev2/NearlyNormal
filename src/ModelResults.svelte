@@ -2,7 +2,6 @@
   export let sim = () => ({ });
   export let seq = [];
   export let confidence = 0.95;
-  export let condition = () => false;
   export let ha;
 
   const round = num => `${Math.ceil(num * 1000) / 1000}`

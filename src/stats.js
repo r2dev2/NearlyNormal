@@ -90,9 +90,6 @@ export function monteCarlo(seq, ha) {
         const more = means.filter(e => e > h0).length;
         return 2 * Math.min(less, more) / l;
       }
-      // function keeps ketting stringified for some reason
-      if (typeof ha.operation == 'string')
-        ha.operation = eval(ha.operation);
       return means.filter(condition).length / l;
     },
     ci(level) {
