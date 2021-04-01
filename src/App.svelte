@@ -31,22 +31,24 @@
         <ModelResults sim={students} seq={$seq} {confidence} {ha} />
       </div>
     </div>
-    <div class="h-picker">
-      <p>
-        H0: u =
-        <input class="h-value" type="text" bind:value={h0} />
-      </p>
-      <p>
-        HA: u
-        <select bind:value={sop}>
-          {#each Object.values(OpString) as disp}
-            {#if (typeof disp) == 'string'}
-              <option value={disp}>{disp}</option>
-            {/if}
-          {/each}
-        </select>
-        <input class="h-value" type="text" bind:value={h0} />
-      </p>
+    <div class="h-picker-conf">
+      <div class="h-picker">
+        <p>
+          H<sub>0</sub>: μ =
+          <input class="h-value" type="text" bind:value={h0} />
+        </p>
+        <p>
+          H<sub>A</sub>: μ
+          <select bind:value={sop}>
+            {#each Object.values(OpString) as disp}
+              {#if (typeof disp) == 'string'}
+                <option value={disp}>{disp}</option>
+              {/if}
+            {/each}
+          </select>
+          <input class="h-value" type="text" bind:value={h0} />
+        </p>
+      </div>
       <div class="conf-slider">
         <label for="confidence">
           Confidence: <span class="num">{confidence}%</span>
@@ -69,6 +71,12 @@
     padding: 1em;
     max-width: 240px;
     margin: 0 auto;
+  }
+
+  .h-picker {
+    margin: auto;
+    text-align: left;
+    width: max-content;
   }
 
   .conf-slider {
