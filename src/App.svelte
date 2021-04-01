@@ -21,7 +21,7 @@
   let sop = '<';
   $: op = OpString[sop];
   let n = 5;
-  $: ha = new HA(op, h0);
+  $: ha = new HA(op, parseFloat(h0));
 </script>
 
 <main>
@@ -51,7 +51,10 @@
       </div>
     </div>
     <div class="h-picker">
-      <p>H0: u = {h0}</p>
+      <p>
+        H0: u =
+        <input class="h-value" type="text" bind:value={h0} />
+      </p>
       <p>
         HA: u
         <select bind:value={sop}>
@@ -61,7 +64,7 @@
             {/if}
           {/each}
         </select>
-        {h0}
+        <input class="h-value" type="text" bind:value={h0} />
       </p>
     </div>
   </div>
@@ -79,6 +82,10 @@
 
   .input, .info-h0 {
     text-align: center;
+  }
+
+  .h-value {
+    width: 4em;
   }
 
   .info {
