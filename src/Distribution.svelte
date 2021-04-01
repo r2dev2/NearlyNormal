@@ -22,23 +22,25 @@
   let target = null;
 
   function handleBarMouseMove(bin) {
-    return e => {
-      try {
-      if (e.buttons == 1) {
+    return async e => {
+      if (e.buttons == 1 && target != null) {
         const pHeight = parseFloat(getComputedStyle(
-          e.target.parentElement.querySelector('.bar')
+          target.parentElement.querySelector('.bar')
         ).height);
-        const dy = lastMousePos - e.clientY;
+        const { top, bottom } = target.getBoundingClientRect();
+        const ogPos = (top + bottom) / 2;
+        const dy = ogPos - e.clientY;
         const da = dy / pHeight;
         bin.amt += da;
+        bin.amt = Math.max(bin.amt, 0);
         bins = bins;
+        await tick();
       }
-      lastMousePos = e.clientY;
-      } catch (e_) { console.error('bad', e_) }
     }
   }
 
   function onWinMouseUp() {
+    console.log('window onmouseup');
     onMouseMove = () => { };
   }
   onMount(() => window.addEventListener('mouseup', onWinMouseUp));
@@ -46,10 +48,12 @@
     
 </script>
 
-<div
-  class="dist"
-  on:mousedown={e => lastMousePos = e.clientY, target = e.target}
-  on:mousemove={e => onMouseMove(e)}>
+<svelte:window
+  on:mousedown={e => { console.log('dist mousedown'); lastMousePos = e.clientY; target = e.target }}
+  on:mousemove={e => onMouseMove(e)} />
+
+
+<div class="dist">
   <div class="bins">
     {#each groups as bin}
       <div class="bar-container">
