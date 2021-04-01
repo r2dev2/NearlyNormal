@@ -6,7 +6,7 @@
   import Distribution from './Distribution.svelte';
 
   const seq = writable([]);
-  const confidence = 0.95;
+  let confidence = 95;
   let h0 = 26;
   let sop = '>';
   let n = 5;
@@ -24,13 +24,11 @@
     <div class="info">
       <div>
         <h2>Monte Carlo</h2>
-        <ModelResults
-          sim={monteCarlo} seq={$seq} {confidence} {ha} />
+        <ModelResults sim={monteCarlo} seq={$seq} {confidence} {ha} />
       </div>
       <div>
         <h2>Student's t model</h2>
-        <ModelResults
-          sim={students} seq={$seq} {confidence} {ha} />
+        <ModelResults sim={students} seq={$seq} {confidence} {ha} />
       </div>
     </div>
     <div class="h-picker">
@@ -49,6 +47,16 @@
         </select>
         <input class="h-value" type="text" bind:value={h0} />
       </p>
+      <div class="conf-slider">
+        <label for="confidence">
+          Confidence: <span class="num">{confidence}%</span>
+        </label>
+        <input
+          name="confidence"
+          class="slider"
+          type="range"
+          min={1} max={99} bind:value={confidence} />
+      </div>
     </div>
   </div>
 </main>
@@ -61,6 +69,16 @@
     padding: 1em;
     max-width: 240px;
     margin: 0 auto;
+  }
+
+  .conf-slider {
+    padding-top: 0.5%;
+    width: 50%;
+    margin: auto;
+  }
+
+  .conf-slider > label {
+    padding-bottom: 2%;
   }
 
   .input, .info-h0 {
