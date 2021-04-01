@@ -90,7 +90,6 @@ export function students(seq, ha) {
   const mu = mean(seq);
   const df = seq.length - 1;
 
-  // TODO get a better way to set u0
   return {
     p() {
       const tv = tval(seq, h0);
@@ -108,6 +107,20 @@ export function students(seq, ha) {
       return { left: mu - lr, right: mu + lr };
     }
   };
+}
+
+export function normal(x) {
+  return Math.exp(-x * x / 2) / (Math.sqrt(2 * Math.PI));
+}
+
+export function normDist(center, bars, binWidth) {
+  try {
+  const r = [...Array(bars).keys()]
+    .map(i => 
+    Math.round(normal(((i + 0.5) * binWidth - center) / 8) * 300));
+  return r;
+  }
+  catch (e) { console.error('BAD', e); return [] };
 }
 
 function rngChoice(seq) {

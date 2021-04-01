@@ -13,6 +13,7 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "chart.js": "^2.9.4",
     "sirv-cli": "^1.0.0",
     "statistics.js": "^1.0.0"
   },
