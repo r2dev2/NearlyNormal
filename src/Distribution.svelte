@@ -19,6 +19,7 @@
 
   let onMouseMove = () => { };
   let target = null;
+  let targetBar = null;
 
   function handleBarMouseMove(bin) {
     return e => {
@@ -28,7 +29,7 @@
           bins = bins;
         }
         const pHeight = parseFloat(getComputedStyle(
-          target.parentElement.querySelector('.bar')
+          targetBar
         ).height);
         const { top, bottom } = target.getBoundingClientRect();
         const ogPos = (top + bottom) / 2;
@@ -43,6 +44,7 @@
 
   function onWinMouseUp() {
     target = null;
+    targetBar = null;
     onMouseMove = () => { };
   }
   onMount(() => window.addEventListener('mouseup', onWinMouseUp));
@@ -51,7 +53,7 @@
 </script>
 
 <svelte:window
-  on:mousedown={e => { target = e.target }}
+  on:mousedown={e => { target = e.target; targetBar = target.parentElement.querySelector('.bar') }}
   on:mousemove={e => onMouseMove(e)} />
 
 
