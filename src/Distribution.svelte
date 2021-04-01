@@ -22,19 +22,22 @@
   let target = null;
 
   function handleBarMouseMove(bin) {
-    return async e => {
+    return e => {
       if (e.buttons == 1 && target != null) {
+        if (bin.amt == 0) {
+          bin.amt = 1;
+          bins = bins;
+        }
         const pHeight = parseFloat(getComputedStyle(
           target.parentElement.querySelector('.bar')
         ).height);
         const { top, bottom } = target.getBoundingClientRect();
         const ogPos = (top + bottom) / 2;
         const dy = ogPos - e.clientY;
-        const da = dy / pHeight;
-        bin.amt += da;
-        bin.amt = Math.max(bin.amt, 0);
+        const dm = (pHeight + dy) / pHeight;
+        bin.amt *= dm;
+        bin.amt = Math.min(Math.max(bin.amt, 0), 100);
         bins = bins;
-        await tick();
       }
     }
   }
