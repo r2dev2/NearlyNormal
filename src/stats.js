@@ -82,15 +82,19 @@ export function monteCarlo(seq, ha) {
   const means = monteCarloMeans(seq).sort();
   const mu = mean(seq);
   const { length: l } = means;
-  return {
-    // Use binary search later if this is too slow
-    p() {
-      if (operation == Operator.notequal) {
+  const p = (() => {
+    if (operation == Operator.notequal) {
         const less = means.filter(e => e < h0).length;
         const more = means.filter(e => e > h0).length;
         return 2 * Math.min(less, more) / l;
       }
       return means.filter(condition).length / l;
+  })();
+
+  return {
+    // Use binary search later if this is too slow
+    p() {
+      return p;
     },
     ci(level) {
       const lr = Math.floor(l * (1 - level) / 2);
@@ -104,8 +108,7 @@ export function students(seq, ha) {
   const mu = mean(seq);
   const df = seq.length - 1;
 
-  return {
-    p() {
+  const p = (() => {
       const tv = tval(seq, h0);
       const tcdf_df = (l, r) => tcdf(l, r, df);
       if (ha.operation == Operator.less)
@@ -115,10 +118,21 @@ export function students(seq, ha) {
       if (ha.operation == Operator.notequal)
         return tcdf_df(-99, Math.min(tv, -tv)) * 2;
       return 0;
+  })();
+
+  const ciTable = new Map();
+  const SE = se(seq);
+
+  return {
+    p() {
+      return p;
     },
     ci(level) {
-      const lr = invT(level, seq.length - 1) * se(seq);
-      return { left: mu - lr, right: mu + lr };
+      if (!ciTable.has(level)) {
+        const lr = invT(level, seq.length - 1) * SE;
+        ciTable.set(level, { left: mu - lr, right: mu + lr });
+      }
+      return ciTable.get(level);
     }
   };
 }
@@ -128,7 +142,7 @@ export function normDist(mu, s, binWidth) {
   const pf = parseFloat;
   const keys = Object.keys(dist).sort((a, b) => pf(a) - pf(b));
   const groups = [{ start: Math.floor(pf(keys[0])), amt: 0 }];
-	const gl = () => groups.length;
+  const gl = () => groups.length;
   for (const k of keys) {
     const ik = parseFloat(k);
     if (ik - groups[gl() - 1].start < binWidth) {
@@ -185,8 +199,12 @@ function stdDev(seq) {
   return variance ** 0.5;
 }
 
+const _invTCache = new Map();
+
 // POV: you don't want to figure out how invT actually works
 function invT(conf, df, precision=0.001, pizdecc=1e4) {
+  const key = JSON.stringify([conf, df]);
+  if (_invTCache.has(key)) return _invTCache.get(key);
   let left = 0, right = 10, mid = 0;
   let count = 0;
   while (left < right && count++ < pizdecc) {
@@ -198,5 +216,6 @@ function invT(conf, df, precision=0.001, pizdecc=1e4) {
       left = mid + precision;
     }
   }
+  _invTCache.set(key, left);
   return left;
 }
