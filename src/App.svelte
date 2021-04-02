@@ -72,8 +72,8 @@
     flex-direction: row;
     margin: auto;
     padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
+    width: max-content;
+    margin: auto;
   }
 
   .h-picker {
