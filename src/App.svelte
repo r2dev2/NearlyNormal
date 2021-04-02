@@ -18,8 +18,8 @@
   <div class="input">
     <h2>Sample Distribution</h2>
     <Distribution {seq} {n} />
-    <input class="slider" type="range" min={2} max={60} bind:value={n} />
-    <p>n={n}</p>
+    <input id="n-slider" class="slider" type="range" min={2} max={60} bind:value={n} />
+    <label for="n-slider">n={n}</label>
   </div>
   <div class="info-h0">
     <div class="info">
@@ -36,7 +36,8 @@
       <div class="h-picker">
         <p>
           H<sub>0</sub>: μ =
-          <input class="h-value" type="text" bind:value={h0} />
+          <input id="h0-value" class="h-value" type="text" bind:value={h0} />
+          <label for="h0-value" style="font-size: 0px">{h0}</label>
         </p>
         <p>
           H<sub>A</sub>: μ
@@ -47,7 +48,8 @@
               {/if}
             {/each}
           </select>
-          <input class="h-value" type="text" bind:value={h0} />
+          <input id="ha-value" class="h-value" type="text" bind:value={h0} />
+          <label for="ha-value" style="font-size: 0px">{h0}</label>
         </p>
       </div>
       <div class="conf-slider">
@@ -55,7 +57,7 @@
           Confidence: <span class="num">{confidence}%</span>
         </label>
         <input
-          name="confidence"
+          id="confidence"
           class="slider"
           type="range"
           min={1} max={99} bind:value={confidence} />
@@ -111,7 +113,7 @@
 
   :global(.num) {
     color: crimson;
-    background-color: #F1F1F1;
+    background-color: #FFFFFF;
     font-size: 105%;
   }
 
