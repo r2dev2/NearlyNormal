@@ -5,10 +5,16 @@ const MC_SIMS = 1e4;
 const stats = new Statistics();
 // stats is old and needs this reference :(
 // there is a bug where it starts outputting .5 after a high enough value
+const _tcdfCache = new Map();
 const _tcdf = (num, df) => {
   if (num >= 8 && df >= 10 || num >= 10 && 3 <= df && df <= 10)
     return 1;
-  return stats.studentsTCumulativeValue(num, df);
+
+  const key = JSON.stringify([num, df]);
+  if (_tcdfCache.has(key)) return _tcdfCache.get(key);
+  const val = stats.studentsTCumulativeValue(num, df);
+  _tcdfCache.set(key, val);
+  return val;
 }
 const tcdf = (left, right, df) => _tcdf(right, 19) - _tcdf(left, 19);
 
@@ -84,15 +90,14 @@ export function monteCarlo(seq, ha) {
   const { length: l } = means;
   const p = (() => {
     if (operation == Operator.notequal) {
-        const less = means.filter(e => e < h0).length;
-        const more = means.filter(e => e > h0).length;
-        return 2 * Math.min(less, more) / l;
-      }
-      return means.filter(condition).length / l;
+      const less = means.filter(e => e < h0).length;
+      const more = means.filter(e => e > h0).length;
+      return 2 * Math.min(less, more) / l;
+    }
+    return means.filter(condition).length / l;
   })();
 
   return {
-    // Use binary search later if this is too slow
     p() {
       return p;
     },
@@ -202,7 +207,7 @@ function stdDev(seq) {
 const _invTCache = new Map();
 
 // POV: you don't want to figure out how invT actually works
-function invT(conf, df, precision=0.001, pizdecc=1e4) {
+function invT(conf, df, precision=0.001, pizdecc=5e2) {
   const key = JSON.stringify([conf, df]);
   if (_invTCache.has(key)) return _invTCache.get(key);
   let left = 0, right = 10, mid = 0;
